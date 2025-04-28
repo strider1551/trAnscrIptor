@@ -21,7 +21,6 @@ transcriptor.custom_logging.setup_logging(level=log_level, log_file=log_file)
 logger = logging.getLogger(__name__)
 if log_file is None:
     logger.error(f'Directory for log files does not exist ({log_dir}).')
-sys.exit()
 
 #Init Gmail
 logger.debug(f'Initializing Gmail')
