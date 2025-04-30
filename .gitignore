@@ -5,6 +5,11 @@ __pycache__/
 
 # Log files
 *.log
+*.log.?
 
 # Environments
 venv/
+
+# Secrets
+client_secret.json
+gmail_token.json
