@@ -23,10 +23,11 @@ class CustomLogFormatter(logging.Formatter):
     }
     RESET_CODE = "\x1b[0m" # Reset to default color
 
-    def __init__(self, fmt=None, datefmt=None, style='%'):
+    def __init__(self, fmt=None, datefmt=None, style='%', colorize=False):
         super().__init__(fmt=fmt or self.FORMAT, datefmt=datefmt or self.DATE_FORMAT, style=style)
         # Store the output stream when the formatter is associated with a handler
         self.stream = None
+        self.colorize = colorize
 
     def format(self, record):
         """
@@ -35,13 +36,11 @@ class CustomLogFormatter(logging.Formatter):
         # Get the default formatted message
         log_message = super().format(record)
 
-        # Check if the output stream is a TTY (terminal) and if so add color
-        is_tty = hasattr(sys.stdout, 'isatty') and sys.stdout.isatty()
-        if is_tty:
+        # Add color for terminal output
+        if self.colorize:
             # Add color codes based on the log level
             level_color = self.COLOR_CODES.get(record.levelno)
             if level_color:
-                # Apply color to the entire formatted line
                 log_message = f"{level_color}{log_message}{self.RESET_CODE}"
 
         return log_message
@@ -72,7 +71,7 @@ def setup_logging(level=logging.DEBUG, log_file=None, max_bytes=1024*1024*5, bac
     # Create and add StreamHandler for console output
     console_handler = logging.StreamHandler(sys.stdout)
     # Use a new instance of the custom formatter for each handler
-    console_formatter = CustomLogFormatter()
+    console_formatter = CustomLogFormatter(colorize=True)
     console_handler.setFormatter(console_formatter)
     root_logger.addHandler(console_handler)
 
